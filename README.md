@@ -81,11 +81,11 @@ laygen ~/my-axum-project -l zh --controller-dir api --service-dir logic
 2. **目录检查**：检查 controller 和 service 目录是否存在
    - 如果不存在，会询问是否创建
    - 可以选择创建或放弃
-3. **Controller 生成**：
+3. **controller 生成**：
    - 导航到目标子目录（可以多级导航）
    - 输入控制器文件名
    - 输入方法名（可留空，默认使用文件名）
-4. **Service 生成**：
+4. **service 生成**：
    - 导航到目标子目录
    - 输入服务文件名
    - 输入方法名（可留空，默认使用文件名）
