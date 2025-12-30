@@ -17,6 +17,7 @@
 cd your/path/laygen
 cargo install --path .
 ```
+你也可以直接运行 build_install.sh
 
 ## 使用方法
 
