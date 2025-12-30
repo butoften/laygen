@@ -22,6 +22,18 @@ pub fn navigate_directory(base_path: &Path, base_dir_name: &str, i18n: &I18n) ->
         let subdirs = get_subdirectories(&current_path)?;
         
         if subdirs.is_empty() {
+            // Show current path even when no subdirectories
+            let relative_path = current_path.strip_prefix(base_path)
+                .unwrap_or(Path::new(""))
+                .display()
+                .to_string();
+            let display_path = if relative_path.is_empty() {
+                format!("{}/", base_dir_name)
+            } else {
+                format!("{}/{}/", base_dir_name, relative_path)
+            };
+            
+            println!("\n{}: {}", i18n.current_path(), display_path);
             println!("{}", i18n.no_subdirectories());
             return Ok(current_path.strip_prefix(base_path)?.to_path_buf());
         }
@@ -36,9 +48,9 @@ pub fn navigate_directory(base_path: &Path, base_dir_name: &str, i18n: &I18n) ->
             .display()
             .to_string();
         let display_path = if relative_path.is_empty() {
-            base_dir_name.to_string()
+            format!("{}/", base_dir_name)
         } else {
-            format!("{}/{}", base_dir_name, relative_path)
+            format!("{}/{}/", base_dir_name, relative_path)
         };
         
         println!("\n{}: {}", i18n.current_path(), display_path);
