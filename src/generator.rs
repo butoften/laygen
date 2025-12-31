@@ -8,6 +8,7 @@ pub fn generate_controller(
     dir_path: &Path,
     file_name: &str,
     method_name: &str,
+    service_file_name: &str,
     i18n: &I18n,
 ) -> Result<()> {
     // Create directory if it doesn't exist
@@ -16,7 +17,7 @@ pub fn generate_controller(
     let file_path = dir_path.join(format!("{}.rs", file_name));
     
     // Generate controller content
-    let content = generate_controller_template(file_name, method_name);
+    let content = generate_controller_template(file_name, method_name, service_file_name);
     
     fs::write(&file_path, content)?;
     println!("{}", i18n.file_created(&file_path.display().to_string()));
@@ -52,7 +53,7 @@ pub fn generate_service(
     Ok(())
 }
 
-fn generate_controller_template(file_name: &str, method_name: &str) -> String {
+fn generate_controller_template(file_name: &str, method_name: &str, service_file_name: &str) -> String {
     // Convert file_name to PascalCase for struct names
     let struct_name = to_pascal_case(file_name);
     
@@ -62,6 +63,12 @@ use axum::response::Json;
 use axum::Extension;
 use error_crate::api_error::{{ApiError, ApiResult}};
 use public::safe_json::SafeJson;
+use public::public::{{
+    origin_display, public_list_response, ApiResponse, AppState, PublicListResponse, QueryParams,
+    ReturnResult,
+}};
+use service_admin_chinese_hsk::{};
+
 use serde::{{Deserialize, Serialize}};
 use utoipa::ToSchema;
 
@@ -83,13 +90,13 @@ pub async fn {}(
     State(state): State<AppState>,
     SafeJson(body): SafeJson<{}Request>,
 ) -> ApiResult<Json<ApiResponse<serde_json::Value>>> {{
-    let res = service::{}(&state.conn, &domain).await?;
+    let res = {}::{}(&state.conn, &domain).await?;
     
     let result = origin_display(query, res, &domain);
     
     Ok(ApiResponse::success(result).to_json())
 }}
-"#, struct_name, struct_name, method_name, struct_name, method_name)
+"#, service_file_name, struct_name, struct_name, method_name, struct_name, service_file_name, method_name)
 }
 
 fn generate_service_template(method_name: &str) -> String {

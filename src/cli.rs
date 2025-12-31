@@ -119,22 +119,7 @@ impl Cli {
             }
         }
 
-        // Navigate controller directory and get file info
-        println!("\n{}", i18n.navigate_controller());
-        let controller_subdir = navigate_directory(&controller_path, &self.controller_dir, &i18n)?;
-        let controller_file_name = self.get_file_name(&i18n, i18n.controller_file_prompt())?;
-        let controller_method_name = self.get_method_name(&i18n, &controller_file_name)?;
-
-        // Generate controller
-        let controller_full_path = controller_path.join(&controller_subdir);
-        generate_controller(
-            &controller_full_path,
-            &controller_file_name,
-            &controller_method_name,
-            &i18n,
-        )?;
-
-        // Navigate service directory and get file info
+        // Navigate service directory and get file info first
         println!("\n{}", i18n.navigate_service());
         let service_subdir = navigate_directory(&service_path, &self.service_dir, &i18n)?;
         let service_file_name = self.get_file_name(&i18n, i18n.service_file_prompt())?;
@@ -155,6 +140,22 @@ impl Cli {
             0 => format!("{}_service", service_file_name),
             _ => service_file_name.clone(),
         };
+
+        // Navigate controller directory and get file info
+        println!("\n{}", i18n.navigate_controller());
+        let controller_subdir = navigate_directory(&controller_path, &self.controller_dir, &i18n)?;
+        let controller_file_name = self.get_file_name(&i18n, i18n.controller_file_prompt())?;
+        let controller_method_name = self.get_method_name(&i18n, &controller_file_name)?;
+
+        // Generate controller with service file name
+        let controller_full_path = controller_path.join(&controller_subdir);
+        generate_controller(
+            &controller_full_path,
+            &controller_file_name,
+            &controller_method_name,
+            &final_service_file_name,
+            &i18n,
+        )?;
 
         // Generate service
         let service_full_path = service_path.join(&service_subdir);
