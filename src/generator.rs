@@ -21,9 +21,9 @@ pub fn generate_controller(
     fs::write(&file_path, content)?;
     println!("{}", i18n.file_created(&file_path.display().to_string()));
 
-    // Update mod.rs
-    update_mod_file(dir_path, file_name)?;
-    println!("{}", i18n.mod_updated(&dir_path.join("mod.rs").display().to_string()));
+    // Update mod.rs or lib.rs
+    let updated_file = update_mod_file(dir_path, file_name)?;
+    println!("{}", i18n.mod_updated(&updated_file.display().to_string()));
 
     Ok(())
 }
@@ -45,9 +45,9 @@ pub fn generate_service(
     fs::write(&file_path, content)?;
     println!("{}", i18n.file_created(&file_path.display().to_string()));
 
-    // Update mod.rs
-    update_mod_file(dir_path, file_name)?;
-    println!("{}", i18n.mod_updated(&dir_path.join("mod.rs").display().to_string()));
+    // Update mod.rs or lib.rs
+    let updated_file = update_mod_file(dir_path, file_name)?;
+    println!("{}", i18n.mod_updated(&updated_file.display().to_string()));
 
     Ok(())
 }

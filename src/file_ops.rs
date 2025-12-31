@@ -90,20 +90,28 @@ fn get_subdirectories(path: &Path) -> Result<Vec<PathBuf>> {
     Ok(subdirs)
 }
 
-pub fn update_mod_file(dir_path: &Path, module_name: &str) -> Result<()> {
+pub fn update_mod_file(dir_path: &Path, module_name: &str) -> Result<PathBuf> {
     let mod_file = dir_path.join("mod.rs");
+    let lib_file = dir_path.join("lib.rs");
     let mod_line = format!("pub mod {};\n", module_name);
     
     if mod_file.exists() {
-        // Check if module already exists
+        // mod.rs exists, add to it
         let content = fs::read_to_string(&mod_file)?;
         if !content.contains(&format!("pub mod {}", module_name)) {
             fs::write(&mod_file, format!("{}{}", content, mod_line))?;
         }
+        Ok(mod_file)
+    } else if lib_file.exists() {
+        // mod.rs doesn't exist but lib.rs exists, add to lib.rs
+        let content = fs::read_to_string(&lib_file)?;
+        if !content.contains(&format!("pub mod {}", module_name)) {
+            fs::write(&lib_file, format!("{}{}", content, mod_line))?;
+        }
+        Ok(lib_file)
     } else {
-        // Create new mod.rs
+        // Neither exists, create new mod.rs
         fs::write(&mod_file, mod_line)?;
+        Ok(mod_file)
     }
-    
-    Ok(())
 }
